@@ -1,26 +1,9 @@
-# This example assumes to use "meishi2" which has 2x2 matrix circuit.
-#
-# If you use a larger one, let's say 40% keyboard, the code will look like:
-# (Note that GPIO pin numbers in this example are written at random. They are fishy)
-# ```
-#   kbd = Keyboard.new(
-#     [ 2, 3, 4, 5 ],                                 # row0, row1,... respectively
-#     [ 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ]  # col0, col1,... respectively
-#   )
-#   kbd.add_layer :default, [
-#     %i(KC_ESC  KC_Q   KC_W .....),
-#     %i(KC_TAB  KC_A   KC_S .....),
-#     %i(KC_LSFT KC_Z   KC_X .....),
-#     %i(KC_NO   KC_NO  KC_LGUI .....),
-#   ]
-# ```
-
 # Wait until Keyboard class is ready
 while !$mutex
   relinquish
 end
 
-# Initialize a Keyboard with GPIO assign
+# Initialize a Keyboard
 kbd = Keyboard.new
 
 kbd.init_pins(
@@ -51,7 +34,6 @@ kbd.define_mode_key :LOWER_SPACE, [ :KC_SPACE, Proc.new { kbd.hold_layer :lower 
 kbd.define_mode_key :ADJUST,      [ nil,       Proc.new { kbd.hold_layer :adjust }, nil,              nil ]
                                                             # ^^^^^^^^^^ `hold_layer` will "hold" layer while pressed
 
-#
 # Alternatively, you can also write like:
 #
 # kbd.add_layer :default, [
@@ -71,8 +53,6 @@ kbd.define_mode_key :ADJUST,      [ nil,       Proc.new { kbd.hold_layer :adjust
 # kbd.define_mode_key :SPACE_LOWER,   [ Proc.new { kbd.lower_layer },         :KC_LCTL,         200,              200 ]
 #
 # Other than `hold_layer` and `lock_layer`, `raise_layer` and `lower_layer` will switch current layer in order
-#
-
 
 # `before_report` will work just right before reporting what keys are pushed to USB host.
 # You can use it to hack data by adding an instance method to Keyboard class by yourself.
