@@ -1,6 +1,6 @@
 ## meishi2
 
-![](images/meishi2.jpg)
+![](meishi2.jpg)
 
 ### Board
 
