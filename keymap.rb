@@ -12,27 +12,26 @@ kbd.init_pins(
 )
 
 # default layer should be added at first
-kbd.add_layer :default, [
-  %i(KC_A      KC_B),    %i(RAISE_ENTER LOWER_SPACE)
+kbd.add_layer :default, %i[
+  KC_A      KC_B    RAISE_ENTER LOWER_SPACE
 ]
-kbd.add_layer :raise, [
-  %i(KC_C      KC_D),    %i(RAISE_ENTER ADJUST)
+kbd.add_layer :raise, %i[
+  KC_C      KC_D    RAISE_ENTER ADJUST
 ]
-kbd.add_layer :lower, [
-  %i(KC_E      KC_F),    %i(RAISE_ENTER LOWER_SPACE)
+kbd.add_layer :lower, %i[
+  KC_E      KC_F    RAISE_ENTER LOWER_SPACE)
 ]
-kbd.add_layer :adjust, [
-  %i(KC_SCOLON KC_LSFT), %i(RAISE_ENTER ADJUST)
+kbd.add_layer :adjust, %i[
+  KC_SCOLON KC_LSFT RAISE_ENTER ADJUST
 ]
-
-#                   Your custom     Keycode    Keycode (only modifiers)             Release time      Re-push time
-#                   key name        or Proc    or Proc                              threshold(ms)     threshold(ms)
-#                                   when you   while you                            to consider as    to consider as
-#                                   click      keep press                           `click the key`   `hold the key`
-kbd.define_mode_key :RAISE_ENTER, [ :KC_ENTER, Proc.new { kbd.hold_layer :raise  }, 200,              150 ]
-kbd.define_mode_key :LOWER_SPACE, [ :KC_SPACE, Proc.new { kbd.hold_layer :lower  }, 300,              400 ]
-kbd.define_mode_key :ADJUST,      [ nil,       Proc.new { kbd.hold_layer :adjust }, nil,              nil ]
-                                                            # ^^^^^^^^^^ `hold_layer` will "hold" layer while pressed
+#
+#                   Your custom     Keycode or             Keycode (only modifiers)      Release time      Re-push time
+#                   key name        Array of Keycode       or Layer Symbol to be held    threshold(ms)     threshold(ms)
+#                                   or Proc                or Proc which will run        to consider as    to consider as
+#                                   when you click         while you keep press          `click the key`   `hold the key`
+kbd.define_mode_key :RAISE_ENTER, [ :KC_ENTER,             :raise,                       200,              150 ]
+kbd.define_mode_key :LOWER_SPACE, [ :KC_SPACE,             :lower,                       300,              400 ]
+kbd.define_mode_key :ADJUST,      [ nil,                   :adjust,                      nil,              nil ]
 
 # Alternatively, you can also write like:
 #
