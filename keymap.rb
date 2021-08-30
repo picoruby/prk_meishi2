@@ -13,7 +13,7 @@ kbd.init_pins(
 
 # default layer should be added at first
 kbd.add_layer :default, %i[
-  KC_A      KC_B    RAISE_ENTER LOWER_SPACE
+  FIBONACCI KC_B    RAISE_ENTER LOWER_SPACE
 ]
 kbd.add_layer :raise, %i[
   KC_C      KC_D    RAISE_ENTER ADJUST
@@ -33,29 +33,19 @@ kbd.define_mode_key :RAISE_ENTER, [ :KC_ENTER,             :raise,              
 kbd.define_mode_key :LOWER_SPACE, [ :KC_SPACE,             :lower,                       300,              400 ]
 kbd.define_mode_key :ADJUST,      [ nil,                   :adjust,                      nil,              nil ]
 
-# Alternatively, you can also write like:
-#
-# kbd.add_layer :default, [
-#   %i(KC_A SHIFT_RAISE), %i(KC_B SHIFT_SPACE)
-# ]
-# kbd.add_layer :raise, [
-#   %i(KC_C SHIFT_LOWER), %i(KC_D SPACE_LOWER)
-# ]
-# kbd.add_layer :lower, [
-#   %i(KC_E SHIFT_DEFAULT), %i(KC_F LOWER_SPACE)
-# ]
-# kbd.define_mode_key :SHIFT_RAISE,   [ Proc.new { kbd.lock_layer :raise },   :KC_RSFT,         200,              200 ]
-# kbd.define_mode_key :SHIFT_LOWER,   [ Proc.new { kbd.lock_layer :lower },   :KC_RSFT,         200,              200 ]
-# kbd.define_mode_key :SHIFT_DEFAULT, [ Proc.new { kbd.lock_layer :default }, :KC_RSFT,         200,              200 ]
-#                                                      ^^^^^^^^^^ `lock_layer` will "lock" layer to specified one
-# kbd.define_mode_key :SHIFT_SPACE,   [ :KC_SPACE,                            :KC_LSFT,         300,              400 ]
-# kbd.define_mode_key :SPACE_LOWER,   [ Proc.new { kbd.lower_layer },         :KC_LCTL,         200,              200 ]
-#
-# Other than `hold_layer` and `lock_layer`, `raise_layer` and `lower_layer` will switch current layer in order
+class Fibonacci
+  def initialize
+    @a = 0 ; @b = 1
+  end
+  def take
+    result = @a + @b
+    @a = @b
+    @b = result
+  end
+end
+fibonacci = Fibonacci.new
+kbd.define_mode_key :FIBONACCI, [ Proc.new { kbd.macro fibonacci.take }, :KC_NO, 300, nil ]
 
-# `before_report` will work just right before reporting what keys are pushed to USB host.
-# You can use it to hack data by adding an instance method to Keyboard class by yourself.
-# ex) Use Keyboard#before_report filter if you want to input `":" w/o shift` and `";" w/ shift`
 kbd.before_report do
   kbd.invert_sft if kbd.keys_include?(:KC_SCOLON)
   # You'll be also able to write `invert_ctl`, `invert_alt` and `invert_gui`
