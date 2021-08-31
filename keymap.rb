@@ -13,7 +13,7 @@ kbd.init_pins(
 
 # default layer should be added at first
 kbd.add_layer :default, %i[
-  FIBONACCI KC_B    RAISE_ENTER LOWER_SPACE
+  FIBONACCI PASSWD  RAISE_ENTER LOWER_SPACE
 ]
 kbd.add_layer :raise, %i[
   KC_C      KC_D    RAISE_ENTER ADJUST
@@ -45,6 +45,28 @@ class Fibonacci
 end
 fibonacci = Fibonacci.new
 kbd.define_mode_key :FIBONACCI, [ Proc.new { kbd.macro fibonacci.take }, :KC_NO, 300, nil ]
+
+class Password
+  def initialize
+    @c = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_!@#$%^&*()=-+/[]{}<>'
+  end
+  def generate
+    unless @srand
+      # generate seed with board_millis
+      srand(board_millis)
+      @srand = true
+    end
+    password = ""
+    while true
+      i = rand % 100
+      password << @c[i].to_s
+      break if password.length == 8
+    end
+    return password
+  end
+end
+password = Password.new
+kbd.define_mode_key :PASSWD, [ Proc.new { kbd.macro password.generate, [] }, :KC_NO, 300, nil ]
 
 kbd.before_report do
   kbd.invert_sft if kbd.keys_include?(:KC_SCOLON)
