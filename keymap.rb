@@ -1,8 +1,3 @@
-# Wait until Keyboard class is ready
-while !$mutex
-  relinquish
-end
-
 # Initialize a Keyboard
 kbd = Keyboard.new
 
@@ -13,10 +8,10 @@ kbd.init_pins(
 
 # default layer should be added at first
 kbd.add_layer :default, %i[
-  FIBONACCI PASSWD  RAISE_ENTER LOWER_SPACE
+  FIBONACCI PASSWD  KC_LEFT     KC_RIGHT
 ]
 kbd.add_layer :raise, %i[
-  KC_C      KC_D    RAISE_ENTER ADJUST
+  RUBY_GUI  KC_1    RAISE_ENTER LOWER_SPACE
 ]
 kbd.add_layer :lower, %i[
   KC_E      KC_F    RAISE_ENTER LOWER_SPACE)
@@ -32,6 +27,7 @@ kbd.add_layer :adjust, %i[
 kbd.define_mode_key :RAISE_ENTER, [ :KC_ENTER,             :raise,                       200,              150 ]
 kbd.define_mode_key :LOWER_SPACE, [ :KC_SPACE,             :lower,                       300,              400 ]
 kbd.define_mode_key :ADJUST,      [ nil,                   :adjust,                      nil,              nil ]
+kbd.define_mode_key :RUBY_GUI,    [ Proc.new { kbd.ruby }, :KC_RGUI,                     300,              nil ]
 
 class Fibonacci
   def initialize
