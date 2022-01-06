@@ -7,66 +7,13 @@ kbd.init_pins(
 )
 
 # default layer should be added at first
-kbd.add_layer :default, %i[
-  FIBONACCI PASSWD  KC_LEFT     KC_RIGHT
-]
-kbd.add_layer :raise, %i[
-  RUBY_GUI  KC_1    RAISE_ENTER LOWER_SPACE
-]
-kbd.add_layer :lower, %i[
-  KC_E      KC_F    RAISE_ENTER LOWER_SPACE)
-]
-kbd.add_layer :adjust, %i[
-  KC_SCOLON KC_LSFT RAISE_ENTER ADJUST
-]
-#
-#                   Your custom     Keycode or             Keycode (only modifiers)      Release time      Re-push time
-#                   key name        Array of Keycode       or Layer Symbol to be held    threshold(ms)     threshold(ms)
-#                                   or Proc                or Proc which will run        to consider as    to consider as
-#                                   when you click         while you keep press          `click the key`   `hold the key`
-kbd.define_mode_key :RAISE_ENTER, [ :KC_ENTER,             :raise,                       200,              150 ]
-kbd.define_mode_key :LOWER_SPACE, [ :KC_SPACE,             :lower,                       300,              400 ]
-kbd.define_mode_key :ADJUST,      [ nil,                   :adjust,                      nil,              nil ]
-kbd.define_mode_key :RUBY_GUI,    [ Proc.new { kbd.ruby }, :KC_RGUI,                     300,              nil ]
+kbd.add_layer :default, %i(CUT COPY PASTE RAISE_ENTER)
+kbd.add_layer :raise, [ %i(KC_LCTL KC_X), %i(KC_LCTL KC_C), %i(KC_LCTL KC_V), :RAISE_ENTER ]
 
-class Fibonacci
-  def initialize
-    @a = 0 ; @b = 1
-  end
-  def take
-    result = @a + @b
-    @a = @b
-    @b = result
-  end
-end
-fibonacci = Fibonacci.new
-kbd.define_mode_key :FIBONACCI, [ Proc.new { kbd.macro fibonacci.take }, :KC_NO, 300, nil ]
+kbd.define_composite_key :CUT, %i(KC_LCTL KC_X)
+kbd.define_composite_key :COPY, %i(KC_LCTL KC_C)
+kbd.define_composite_key :PASTE, %i(KC_LCTL KC_V)
 
-class Password
-  def initialize
-    @c = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_!@#$%^&*()=-+/[]{}<>'
-  end
-  def generate
-    unless @srand
-      # generate seed with board_millis
-      srand(board_millis)
-      @srand = true
-    end
-    password = ""
-    while true
-      i = rand % 100
-      password << @c[i].to_s
-      break if password.length == 8
-    end
-    return password
-  end
-end
-password = Password.new
-kbd.define_mode_key :PASSWD, [ Proc.new { kbd.macro password.generate, [] }, :KC_NO, 300, nil ]
-
-kbd.before_report do
-  kbd.invert_sft if kbd.keys_include?(:KC_SCOLON)
-  # You'll be also able to write `invert_ctl`, `invert_alt` and `invert_gui`
-end
+kbd.define_mode_key :RAISE_ENTER, [ :KC_ENTER, :raise, 150, 200 ]
 
 kbd.start!
