@@ -1,4 +1,5 @@
-# Initialize a Keyboard
+
+
 kbd = Keyboard.new
 
 kbd.init_pins(
@@ -6,14 +7,17 @@ kbd.init_pins(
   [ 28, 27 ]  # col0, col1
 )
 
-# default layer should be added at first
-kbd.add_layer :default, %i(CUT COPY PASTE RAISE_ENTER)
-kbd.add_layer :raise, [ %i(KC_LCTL KC_X), %i(KC_LCTL KC_C), %i(KC_LCTL KC_V), :RAISE_ENTER ]
+class Keyboard
+end
 
-kbd.define_composite_key :CUT, %i(KC_LCTL KC_X)
-kbd.define_composite_key :COPY, %i(KC_LCTL KC_C)
-kbd.define_composite_key :PASTE, %i(KC_LCTL KC_V)
+#                            key1      key2
+kbd.add_layer :default, %i(SPC_LAYER1 STATS BOOT  CTR_ENT_LAYER2)
+kbd.add_layer :layer1,  %i(SPC_LAYER1 KC_1  KC_2  CTR_ENT_LAYER2)
+kbd.add_layer :layer2,  %i(SPC_LAYER1 KC_F1 KC_F2 CTR_ENT_LAYER2)
+kbd.define_mode_key :SPC_LAYER1,    [ :KC_SPACE,            :layer1, 200, 200 ]
+kbd.define_mode_key :CTR_ENT_LAYER2,[ %i(KC_RCTL KC_ENTER), :layer2, 300, 150 ]
 
-kbd.define_mode_key :RAISE_ENTER, [ :KC_ENTER, :raise, 150, 200 ]
+kbd.define_mode_key :STATS ,[ Proc.new { PicoRubyVM.print_alloc_stats }, nil, 300, 0 ]
+kbd.define_mode_key :BOOT  ,[ Proc.new { kbd.bootsel! }, nil, 300, 0 ]
 
 kbd.start!
